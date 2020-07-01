@@ -2,7 +2,7 @@
 public class Book {
 
     String bookTitle;
-    boolean borrowed = false;
+    public boolean borrowed = false;
 
     @Override
 	public String toString() {

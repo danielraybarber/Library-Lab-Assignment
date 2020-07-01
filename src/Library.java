@@ -1,12 +1,13 @@
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class Library {
     // Add the missing implementation to this class
 	
+	
 	String address;
-	static ArrayList<Book> booksAvailable = new ArrayList<>();
-	ArrayList<Book> booksBorrowed = new ArrayList<>();
+	private final List<Book> booksList = new ArrayList<>();
 	static String hours = "Libraries are open daily from 9am to 5pm.";
 
 
@@ -15,7 +16,7 @@ public class Library {
 	}
 	
 	private void addBook(Book bookTitle) {
-		booksAvailable.add(bookTitle);
+		booksList.add(bookTitle);
 	}
 	
 	private static void printOpeningHours() {
@@ -27,27 +28,47 @@ public class Library {
 		System.out.println(address);
 	}
 	
-	private void borrowBook(Book bookTitle) {
-		
-		if(!booksBorrowed.contains(bookTitle)) {
-			System.out.println(bookTitle +" was successfully borrowed.");
-			booksAvailable.remove(bookTitle);
-			booksBorrowed.add(bookTitle);		
-		}else {
-			System.out.println(bookTitle + " was not available.");
-		}
+	private void borrowBook(String Title) {
+		boolean stop = false;
+        for (Book book : booksList) {
+            if (Title.equals(book.getTitle()) && !book.isBorrowed()) {
+                System.out.println("You successfully borrowed " + Title);
+                book.borrowed();
+                stop = true;
+            } else if (Title.equals(book.getTitle()) && book.isBorrowed()) {
+                System.out.println("Sorry, " + Title +" is already borrowed.");
+                stop = true;
+            }
+        }
+        if (!stop) {
+            System.out.println("Sorry, " + Title + " is not in our catalog. ");
+        }
 		
 	}
 
-	
 	private void printAvailableBooks() {
-		System.out.println(booksAvailable);
-	}
+		if (!booksList.isEmpty()) {
+            for (Book book : booksList) {
+                if (!book.isBorrowed()) {
+                    System.out.println(book.getTitle());
+                }
+            }
+        } else {
+            System.out.println("No books in catalog.");
+        }
+    }
+
+
 	
-	private void returnBook(Book bookTitle) {
-		booksBorrowed.remove(bookTitle);
-		booksAvailable.add(bookTitle);
-	}
+	private void returnBook(String Title) {
+		for (Book book : booksList) {
+            if (Title.equals(book.getTitle()) && book.isBorrowed()) {
+                System.out.println("You successfully returned " + Title);
+                book.returned();
+            }
+        }
+    }
+
 
 	
 	public static void main(String[] args) {
@@ -73,9 +94,9 @@ public class Library {
 
         // Try to borrow The Lords of the Rings from both libraries
         System.out.println("Borrowing The Lord of the Rings:");
-        firstLibrary.borrowBook(new Book("The Lord of the Rings"));
-        firstLibrary.borrowBook(new Book("The Lord of the Rings"));
-        secondLibrary.borrowBook(new Book("The Lord of the Rings"));
+        firstLibrary.borrowBook("The Lord of the Rings");
+        firstLibrary.borrowBook("The Lord of the Rings");
+        secondLibrary.borrowBook("The Lord of the Rings");
         System.out.println();
 
         // Print the titles of all available books from both libraries
@@ -88,7 +109,7 @@ public class Library {
 
         // Return The Lords of the Rings to the first library
         System.out.println("Returning The Lord of the Rings:");
-        firstLibrary.returnBook(new Book("The Lord of the Rings"));
+        firstLibrary.returnBook("The Lord of the Rings");
         System.out.println();
 
         // Print the titles of available from the first library
